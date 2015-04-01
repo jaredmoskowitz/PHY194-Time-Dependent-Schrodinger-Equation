@@ -1,11 +1,13 @@
-Roles
-        Prepart of programming both methods - Jared
-        1. - Jared
-        2. - Nolan
-        3. - Nolan
-        4. - Chase
-        5. - Chase
-        6. - Together
 
-        Comments - Together
-        Analysis - Together
+Roles                           Deadlines
+-----------------------------------------
+Prelim - Jared                  04/02/15
+1. - Chase                      04/04/15
+2. - Nolan                      04/04/15
+3. - Nolan                      04/04/15
+4. - Chase                      04/06/15
+5. - Jared                      04/06/15
+6. - Together                   04/07/15
+
+Comments - Together             04/08/15
+Analysis - Together             04/08/15
