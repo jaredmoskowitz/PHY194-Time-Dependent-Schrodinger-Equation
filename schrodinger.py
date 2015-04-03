@@ -30,7 +30,7 @@ def generateWavePacket( x0, k0, sigma):
          return np.array([psi((x*dx+boundaryConditions[0])) for x in range(totalSteps)])
 
 def main():
-        ps = np.array(generateWavePacket(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3])))
+        ps = generateWavePacket(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
         print ps[:10]
         potential = helpers.flatWell
         for i in range(10):
