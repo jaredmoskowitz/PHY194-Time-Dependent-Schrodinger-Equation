@@ -12,7 +12,11 @@ def finiteDifferenceEquation(psi, V):
         systemMatrix = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
         u = -1
         x = boundaryConditions[0]
+<<<<<<< HEAD
         systemVector = psi
+=======
+        systemVector = np.zeros(totalSteps, complex)
+>>>>>>> 1c5be38e39ae8c00ca512da281a0ff030e933122
 
 
         #create system of equations x

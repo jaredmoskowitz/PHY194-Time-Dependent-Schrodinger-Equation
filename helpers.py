@@ -1,3 +1,5 @@
+import numpy as np
+
 def triangularWell(x):
     return abs(x)
 
