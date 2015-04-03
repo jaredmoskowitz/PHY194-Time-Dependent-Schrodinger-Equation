@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-import helpers, schrodinger
+import helpers, schrodinger, time
 
 length = schrodinger.totalSteps
 
@@ -15,11 +15,12 @@ potPlot,  = axes.plot([], [], 'k:', label="Potential")
 legend = plt.legend(loc='upper right', shadow=True, fontsize='x-large')
 
 
-potential = helpers.makeInfiniteSquareWell(-10, 20)
+potential = helpers.flatWell
 
 boundaryConditions = (-45, 45)
 
-currentWaveFunction = schrodinger.generateWavePacket( 0, .5, .5)
+currentWaveFunction = np.array(schrodinger.generateWavePacket( 0, .5, .5))
+print(currentWaveFunction[:10])
 def init():
     realPlot.set_data([],[])
     imPlot  .set_data([],[])
@@ -30,9 +31,10 @@ def init():
 def animate(i):
     global currentWaveFunction
     currentWaveFunction = schrodinger.finiteDifferenceEquation(currentWaveFunction, potential)
-    #print currentWaveFunction
+    print currentWaveFunction[:10]
+    time.sleep(1)
     length=80
-    xPositions = [schrodinger.dx*i - 40 for i in range(len(currentWaveFunction))]
+    xPositions = [schrodinger.dx*i - 45 for i in range(len(currentWaveFunction))]
     
     
     realPlot.set_data(xPositions, [i.real for i in currentWaveFunction])
