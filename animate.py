@@ -20,7 +20,6 @@ potential = helpers.makeInfiniteSquareWell(-10, 20)
 boundaryConditions = (-45, 45)
 
 currentWaveFunction = schrodinger.generateWavePacket( 0, .5, .5)
-
 def init():
     realPlot.set_data([],[])
     imPlot  .set_data([],[])
@@ -31,8 +30,10 @@ def init():
 def animate(i):
     global currentWaveFunction
     currentWaveFunction = schrodinger.finiteDifferenceEquation(currentWaveFunction, potential)
+    #print currentWaveFunction
     length=80
     xPositions = [schrodinger.dx*i - 40 for i in range(len(currentWaveFunction))]
+    
     
     realPlot.set_data(xPositions, [i.real for i in currentWaveFunction])
     imPlot.set_data(xPositions, [i.imag for i in currentWaveFunction])
@@ -55,7 +56,7 @@ def animate(i):
 
 if __name__ == "__main__":
     anim = animation.FuncAnimation(figure, animate, init_func=init,
-                               frames=1000, interval=2, blit=True)
+                               frames=1, interval=2, blit=True)
 
     plt.show()
 
