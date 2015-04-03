@@ -1,22 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-import time
-
-def triangularWell(x):
-    return abs(x)
-
-def flatWell(x):
-    return 0
-
-def makeInfiniteSquareWell(offset, width):
-    return lambda x: np.inf if (x<offset or x > offset+width) else 0
-
-def makePotentialBarrier(offset, width, height):
-    return lambda x: (x > offset and x < (offset+width))*height
-
-def generateWavePacket( x0, k0, sigma):
-    return lambda x: np.exp(.25*(x-x0)*complex((x0-x)*sigma ** 2, 4*k0)*np.sqrt(np.pi)*sigma/np.sqrt(np.sqrt(2)*np.pi ** 3/2 * sigma))
+import helpers
 
 psi = generateWavePacket( 0, .5, .5)
 dt = 0.08
