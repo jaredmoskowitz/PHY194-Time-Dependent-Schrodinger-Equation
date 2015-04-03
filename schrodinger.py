@@ -1,5 +1,6 @@
 import numpy as np
 import helpers, os, sys
+import time
 #import potentials
 
 dt = 1
@@ -11,7 +12,7 @@ def finiteDifferenceEquation(psi, V):
         systemMatrix = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
         u = -1
         x = boundaryConditions[0]
-        systemVector = np.zeros(totalSteps)
+        systemVector = psi
 
 
         #create system of equations x
@@ -31,13 +32,13 @@ def generateWavePacket( x0, k0, sigma):
          psi = lambda x: np.exp(.25*(x-x0)*complex((x0-x)*sigma ** 2, 4*k0)*np.sqrt(np.pi)*sigma/np.sqrt(np.sqrt(2)*np.pi ** 3/2 * sigma))
          return [psi((x*dx+boundaryConditions[0])) for x in range(totalSteps)]
 
-def potential(x):
-        return x
-
 def main():
         ps = generateWavePacket(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
         potential = helpers.flatWell
-        finiteDifferenceEquation(ps, potential);
+        for i in range(10):
+                ps = finiteDifferenceEquation(ps, potential)
+                print ps[:10]
+                time.sleep(1)
 
 if __name__ == "__main__":
             main()
