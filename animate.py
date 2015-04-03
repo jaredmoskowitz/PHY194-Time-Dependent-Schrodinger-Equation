@@ -1,17 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
-import helpers
+import helpers, schrodinger
 
-psi = generateWavePacket( 0, .5, .5)
-dt = 0.08
-dx = dt
-
-boundaryConditions = (-45, 45)
-length = (boundaryConditions[1] - boundaryConditions[0])/dt
+length = schrodinger.totalSteps
 
 figure = plt.figure()
-axes   = plt.axes(xlim=boundaryConditions, ylim=(-2, 10))
+axes   = plt.axes(xlim=schrodinger.boundaryConditions, ylim=(-2, 10))
 
 realPlot, = axes.plot([], [], 'r',  label="Real")
 imPlot,   = axes.plot([], [], 'b',  label="Imaginary")
@@ -20,10 +15,11 @@ potPlot,  = axes.plot([], [], 'k:', label="Potential")
 legend = plt.legend(loc='upper right', shadow=True, fontsize='x-large')
 
 
-potential = makeInfiniteSquareWell(-10, 20)
+potential = helpers.makeInfiniteSquareWell(-10, 20)
 
 boundaryConditions = (-45, 45)
 
+currentWaveFunction = schrodinger.generateWavePacket( 0, .5, .5)
 
 def init():
     realPlot.set_data([],[])
@@ -33,15 +29,14 @@ def init():
     return (realPlot, imPlot, probPlot, potPlot)
 
 def animate(i):
-    psi=generateWavePacket(0,1,1/(i/50.0 + 1))
-    waveFunction=np.array([psi((i-40.0)) for i in range(80)])
-    deltaX=1
+    global currentWaveFunction
+    currentWaveFunction = schrodinger.finiteDifferenceEquation(currentWaveFunction, potential)
     length=80
-    xPositions = [deltaX*i - 40 for i in range(length)]
+    xPositions = [schrodinger.dx*i - 40 for i in range(len(currentWaveFunction))]
     
-    realPlot.set_data(xPositions, [i.real for i in waveFunction])
-    imPlot.set_data(xPositions, [i.imag for i in waveFunction])
-    probPlot.set_data(xPositions, [abs(i) for i in waveFunction])
+    realPlot.set_data(xPositions, [i.real for i in currentWaveFunction])
+    imPlot.set_data(xPositions, [i.imag for i in currentWaveFunction])
+    probPlot.set_data(xPositions, [abs(i) for i in currentWaveFunction])
     potPlot.set_data(xPositions, [potential(x) if potential(x) != np.inf else 100 for x in xPositions])
     return (realPlot, imPlot, probPlot, potPlot)
     
