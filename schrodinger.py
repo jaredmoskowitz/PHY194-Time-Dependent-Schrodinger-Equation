@@ -3,9 +3,9 @@ import helpers, os, sys
 import time
 #import potentials
 
-dt = 0.08
+dt = 1
 dx = dt
-boundaryConditions = (-45, 45)
+boundaryConditions = (-5, 5)
 totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)
 
 def finiteDifferenceEquation(psi, V):
@@ -17,9 +17,9 @@ def finiteDifferenceEquation(psi, V):
         #create system of equations x
         for i in range(totalSteps):
                 systemMatrix[i, (i - 1)%totalSteps] = coeff
-                systemMatrix[i, (i)%totalSteps] = (V(x)*(dx ** 2) - 2/(dx ** 2))*coeff
+                systemMatrix[i, (i)%totalSteps] = (V(x)*(dx ** 2) - 2)*coeff
                 systemMatrix[i, (i + 1)%totalSteps] = coeff
-
+                #print systemMatrix
                 x += dx
 
         return np.linalg.solve(systemMatrix, psi)
@@ -31,7 +31,7 @@ def generateWavePacket( x0, k0, sigma):
 
 def main():
         ps = np.array(generateWavePacket(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3])))
-        print ps[:10]
+        print ps
         potential = helpers.flatWell
         for i in range(10):
                 ps = finiteDifferenceEquation(ps, potential)
