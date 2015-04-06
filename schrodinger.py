@@ -3,9 +3,9 @@ import helpers, os, sys
 import time
 #import potentials
 
-dt = .08
-dx = dt
-boundaryConditions = (-2, 2)
+dt = .02
+dx = 0.08
+boundaryConditions = (-40, 40)
 totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)
 
 def finiteDifferenceEquation(psi, V):

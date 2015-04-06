@@ -25,9 +25,10 @@ imPlot,   = axes.plot([], [], 'b',  label="Imaginary")
 probPlot, = axes.plot([], [], 'k-', label="Probablility", linewidth=2)
 #  And the plot of the potential
 potPlot,  = axes.plot([], [], 'k:', label="Potential")
+legend = plt.legend(loc='upper right', shadow=True, fontsize='x-large')
 
 
-potential = helpers.triangularWell
+potential = helpers.flatWell
 
 waveFunction = schrodinger.generateWavePacket(0,.5,.5)
 
@@ -44,11 +45,11 @@ def init():
 
 def animate(i):
     global waveFunction
-    waveFunction = schrodinger.crankNicolson(waveFunction, potential)
+    waveFunction = schrodinger.finiteDifferenceEquation(waveFunction, potential)
     print waveFunction[:10]
     #time.sleep(1)
     length=80
-    xPositions = [dx*i - 45 for i in range(len(waveFunction))]
+    xPositions = [dx*i + boundaryConditions[0] for i in range(len(waveFunction))]
 
 
     realPlot.set_data(xPositions, [i.real for i in waveFunction])
