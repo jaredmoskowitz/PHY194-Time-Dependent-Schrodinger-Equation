@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('TkAgg')
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation
@@ -5,8 +8,9 @@ import helpers, schrodinger, time
 
 length = schrodinger.totalSteps
 
+currentWaveFunction = np.array(schrodinger.generateWavePacket( 0, .5, .5))
 figure = plt.figure()
-axes   = plt.axes(xlim=schrodinger.boundaryConditions, ylim=(-2, 10))
+axes   = plt.axes(xlim=schrodinger.boundaryConditions, ylim=(1.5*min(currentWaveFunction), 1.5*max(currentWaveFunction)))
 
 realPlot, = axes.plot([], [], 'r',  label="Real")
 imPlot,   = axes.plot([], [], 'b',  label="Imaginary")
@@ -19,9 +23,10 @@ potential = helpers.flatWell
 
 boundaryConditions = (-45, 45)
 
-currentWaveFunction = np.array(schrodinger.generateWavePacket( 0, .5, .5))
 print(currentWaveFunction[:10])
 def init():
+
+
     realPlot.set_data([],[])
     imPlot  .set_data([],[])
     probPlot.set_data([],[])
@@ -30,19 +35,19 @@ def init():
 
 def animate(i):
     global currentWaveFunction
-    currentWaveFunction = schrodinger.finiteDifferenceEquation(currentWaveFunction, potential)
+    currentWaveFunction = schrodinger.crankNicolson(currentWaveFunction, potential)
     print currentWaveFunction[:10]
-    time.sleep(1)
+    #time.sleep(1)
     length=80
     xPositions = [schrodinger.dx*i - 45 for i in range(len(currentWaveFunction))]
-    
-    
+
+
     realPlot.set_data(xPositions, [i.real for i in currentWaveFunction])
     imPlot.set_data(xPositions, [i.imag for i in currentWaveFunction])
     probPlot.set_data(xPositions, [abs(i) for i in currentWaveFunction])
     potPlot.set_data(xPositions, [potential(x) if potential(x) != np.inf else 100 for x in xPositions])
     return (realPlot, imPlot, probPlot, potPlot)
-    
+
 #def plot(waveFunction, potential, deltaX):
     ##If waveFunction is 1d array
     #length = waveFunction.shape[0]
