@@ -6,24 +6,33 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 import helpers, schrodinger, time
 
-length = schrodinger.totalSteps
+# Get some values from schrodinger
 
-currentWaveFunction = np.array(schrodinger.generateWavePacket( 0, .5, .5))
+totalSteps = schrodinger.totalSteps
+
+boundaryConditions = schrodinger.boundaryConditions
+dx = schrodinger.dx
+dt = schrodinger.dt
+
+
+# Initialize GUI stuff from matplotlib
 figure = plt.figure()
-axes   = plt.axes(xlim=schrodinger.boundaryConditions, ylim=(1.5*min(currentWaveFunction), 1.5*max(currentWaveFunction)))
+axes   = plt.axes(xlim=schrodinger.boundaryConditions, ylim=(-2, 10))
 
+# Initialize plots of the real, complex, and probability of the wave function ...
 realPlot, = axes.plot([], [], 'r',  label="Real")
 imPlot,   = axes.plot([], [], 'b',  label="Imaginary")
 probPlot, = axes.plot([], [], 'k-', label="Probablility", linewidth=2)
+#  And the plot of the potential
 potPlot,  = axes.plot([], [], 'k:', label="Potential")
-legend = plt.legend(loc='upper right', shadow=True, fontsize='x-large')
 
 
-potential = helpers.flatWell
+potential = helpers.triangularWell
 
-boundaryConditions = (-45, 45)
+waveFunction = schrodinger.generateWavePacket(0,.5,.5)
 
-print(currentWaveFunction[:10])
+print(waveFunction[:10])
+
 def init():
 
 
@@ -34,17 +43,17 @@ def init():
     return (realPlot, imPlot, probPlot, potPlot)
 
 def animate(i):
-    global currentWaveFunction
-    currentWaveFunction = schrodinger.crankNicolson(currentWaveFunction, potential)
-    print currentWaveFunction[:10]
+    global waveFunction
+    waveFunction = schrodinger.crankNicolson(waveFunction, potential)
+    print waveFunction[:10]
     #time.sleep(1)
     length=80
-    xPositions = [schrodinger.dx*i - 45 for i in range(len(currentWaveFunction))]
+    xPositions = [dx*i - 45 for i in range(len(waveFunction))]
 
 
-    realPlot.set_data(xPositions, [i.real for i in currentWaveFunction])
-    imPlot.set_data(xPositions, [i.imag for i in currentWaveFunction])
-    probPlot.set_data(xPositions, [abs(i) for i in currentWaveFunction])
+    realPlot.set_data(xPositions, [i.real for i in waveFunction])
+    imPlot.set_data(xPositions, [i.imag for i in waveFunction])
+    probPlot.set_data(xPositions, [abs(i) for i in waveFunction])
     potPlot.set_data(xPositions, [potential(x) if potential(x) != np.inf else 100 for x in xPositions])
     return (realPlot, imPlot, probPlot, potPlot)
 
