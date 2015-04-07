@@ -4,9 +4,9 @@ import time
 from scipy.sparse import diags
 #import potentials
 
-dt = .08
-dx = dt
-boundaryConditions = (-2, 2)
+dt = .02
+dx = 0.08
+boundaryConditions = (-40, 40)
 totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)
 
 def finiteDifferenceEquation(psi, V):
@@ -48,8 +48,7 @@ def crankNicolson(psi, V):
 
 def generateWavePacket( x0, k0, sigma):
          psi = lambda x: np.exp(.25*(x-x0)*complex((x0-x)*sigma ** 2, 4*k0)*np.sqrt(np.pi)*sigma/np.sqrt(np.sqrt(2)*np.pi ** 3/2 * sigma))
-         #return normalize(np.array([psi((x*dx+boundaryConditions[0])) for x in range(totalSteps)]))
-         return psi
+         return np.array([psi(x*dx+boundaryConditions[0]) for x in range(totalSteps)])
 
 def normalize(psi):
         alpha = (1/(sum(psi)*len(psi)*dx)) * (0.5)
