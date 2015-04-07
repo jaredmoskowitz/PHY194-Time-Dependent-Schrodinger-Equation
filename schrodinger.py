@@ -1,6 +1,7 @@
 import numpy as np
 import helpers, os, sys
 import time
+from scipy.sparse import diags
 #import potentials
 
 dt = .08
@@ -16,34 +17,33 @@ def finiteDifferenceEquation(psi, V):
         systemMatrix = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
         x = boundaryConditions[0]
 
-        coeff =  dt/(1j*(dx ** 2))
+        coeff =  1j*dt/(dx ** 2)
         #create system of equations x
         for i in range(totalSteps):
                 systemMatrix[i, (i - 1)%totalSteps] = coeff
                 systemMatrix[i, (i)%totalSteps] = (V(x)*(dx ** 2) - 2)*coeff
                 systemMatrix[i, (i + 1)%totalSteps] = coeff
                 x += dx
+
         return normalize(np.linalg.solve(systemMatrix, psi))
 
 def crankNicolson(psi, V):
-        '''
-        systemMatrix = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
+
+        hamiltonian =   diags([1, -2, 1], [-1, 0, 1], shape=(totalSteps, totalSteps)).toarray()
+
+        #account for wrapping
+        hamiltonian[0, totalSteps - 1] = 1
+        hamiltonian[totalSteps - 1, 0] = 1
+
+        hamiltonian = hamiltonian/(dx ** 2)
+        potential =  np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
         x = boundaryConditions[0]
-
-        coeff =  1j*dt/(2*(dx ** 2))
-       #create system of equations x
         for i in range(totalSteps):
-                systemMatrix[i, (i - 1)%totalSteps] = coeff
-                systemMatrix[i, (i)%totalSteps] = (V(x)*(dx ** 2) - 2)*coeff
-                systemMatrix[i, (i + 1)%totalSteps] = coeff
+                potenial[i, i%totalSteps] = V(x)
                 x += dx
-        return np.linalg.solve(systemMatrix, psi)
 
-        '''
-        ham = lambda x: -1*(1/dx ** 2) + V(x)
-        exponential = lambda x: (1-0.5*1j*ham(x)*dt)/(1+0.5*1j*ham(x)*dt)
-        for x in range(len(psi)):
-                psi[x] = psi[x]*exponential(x)
+        hamiltonian += potential
+        hA =
         return psi
 
 def generateWavePacket( x0, k0, sigma):
