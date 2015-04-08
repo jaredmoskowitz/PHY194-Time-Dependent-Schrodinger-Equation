@@ -1,3 +1,14 @@
+''''
+        schrodinger.py
+
+        Jared Moskowitz, Chase Crumbagh, & Nolan Hawkins
+        04/08/15
+
+        This file contains the methods for generating a wave packet
+        and nuerically solving the TDSE using a naive method
+        and a Crank-Nicolson method for a given potential.
+
+'''
 import numpy as np
 import helpers, os, sys, numpy.matlib
 import time
@@ -8,16 +19,30 @@ dx = 0.08
 boundaryConditions = (-40, 40)
 totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)
 
+'''
+Uses the finite difference scheme to solve the TDSE for a given potential V and
+wave function psi for a certain timestep
+
+parameters:
+        psi - vector of complex values
+        V - python function dependent that takes x as a parameter
+
+return:
+        psi one step forward in time (vector of complex values)
+
+'''
 def naiveMethod(psi, V):
 
         #normalize at each step
         psi = normalize(psi)
 
-        systemMatrix = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
+        #matrix for system of eq
+        systemMatrix = np.zeros((totalSteps, totalSteps), complex)
         x = boundaryConditions[0]
 
         coeff =  1j*dt/(dx ** 2)
-        #create system of equations x
+        #create system of equations where each row in the matrix
+        #corrseponds to the at a given x
         for i in range(totalSteps):
                 systemMatrix[i, (i - 1)%totalSteps] = coeff
                 systemMatrix[i, (i)%totalSteps] = (V(x)*(dx ** 2) - 2)*coeff
@@ -26,9 +51,23 @@ def naiveMethod(psi, V):
 
         return normalize(np.linalg.solve(systemMatrix, psi))
 
+
+'''
+Uses the Crank-Nicolson method to solve the TDSE for a given potential V and
+wave function psi for a certain timestep
+
+parameters:
+        psi - vector of complex values
+        V - python function dependent that takes x as a parameter
+
+return:
+        psi one step forward in time (vector of complex values)
+'''
 def crankNicolsonMethod(psi, V):
 
-        H = diags([1, -2, 1], [-1, 0, 1], shape=(totalSteps, totalSteps), dtype=(complex)).toarray()
+
+        H = diags([1, -2, 1], [-1, 0, 1], shape=(totalSteps, totalSteps),
+                                                dtype=(complex)).toarray()
 
         #account for wrapping
         H[0, totalSteps - 1] = 1
@@ -49,6 +88,10 @@ def crankNicolsonMethod(psi, V):
 
         return np.linalg.solve(hC, psi)
 
+'''
+
+'''
+generates a
 def generateWavePacket( x0, k0, sigma):
          psi = lambda x: np.exp(.25*(x-x0)*complex((x0-x)*sigma ** 2, 4*k0)*np.sqrt(np.pi)*sigma/np.sqrt(np.sqrt(2)*np.pi ** 3/2 * sigma))
          return np.array([psi(x*dx+boundaryConditions[0]) for x in range(totalSteps)])
@@ -56,10 +99,12 @@ def generateWavePacket( x0, k0, sigma):
 def normalize(psi):
         alpha = (1/(sum(psi)*len(psi)*dx)) * (0.5)
         return [elem*alpha for elem in psi]
+
+
 '''
 def main():
         ps = generateWavePacket(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
-        print ps[:10]
+        rint ps[:10]
         potential = helpers.flatWell
         for i in range(10):
                 ps = crankNicolson(ps, potential)
