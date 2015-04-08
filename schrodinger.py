@@ -13,7 +13,7 @@ import numpy as np
 import os, sys, numpy.matlib, time
 from scipy.sparse import diags
 
-dt = 5
+dt = 0.01
 dx = 0.08
 boundaryConditions = (-40, 40)
 totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)

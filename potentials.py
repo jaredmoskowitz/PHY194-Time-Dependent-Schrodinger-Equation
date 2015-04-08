@@ -66,7 +66,7 @@ def generatePotentialBarrier(offset, width, height):
     return lambda x: (x > offset and x < (offset+width))*height
 
 def generateHarmonicWell(offset, slope):
-    return lambda x: slope*(x-offset)**2
+    return lambda x: slope/50*(x-offset)**2
 
 def generateCrystal(offset, width, height):
     return lambda x: 0 if (x<offset or (x/width)%2 < 1) else height
