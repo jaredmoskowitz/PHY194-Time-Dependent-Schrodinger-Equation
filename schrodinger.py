@@ -10,8 +10,7 @@
 
 '''
 import numpy as np
-import helpers, os, sys, numpy.matlib
-import time
+import os, sys, numpy.matlib, time
 from scipy.sparse import diags
 
 dt = 5
