@@ -122,7 +122,7 @@ def diags(array, locations, width):
             else:
                 if i+locations[j]< width and i-locations[j]>= 0:
                     matrix[i, locations[j] + i] = array[j]
-   return matrix
+    return matrix
 
 
 

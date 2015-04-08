@@ -26,23 +26,23 @@ parameters
         offset - x offset
         a, b - varies for each potential
 '''
-def generatePotential(name, offset, a, b):
+def generatePotential(name, offset, width, height, slope):
     vType = potentialNames.index(name)
 
     if (vType == 0):
         return flatWell
     elif (vType == 1):
-        return generateTriangularWell(offset, a)
+        return generateTriangularWell(offset, slope)
     elif (vType == 2):
-        return generateInfiniteSquareWell(offset, a)
+        return generateInfiniteSquareWell(offset, width)
     elif (vType == 3):
-        return generateStep(offset, a)
+        return generateStep(offset, height)
     elif (vType == 4):
-        return generatePotentialBarrier(offset, a, b)
+        return generatePotentialBarrier(offset, width, height)
     elif (vType == 5):
-        return generateCrystal(offset, a, b)
+        return generateCrystal(offset, width, height)
     elif (vType == 6):
-        return generateHarmonicWell(offset, a)
+        return generateHarmonicWell(offset, slope)
 
     return None
 
