@@ -2,14 +2,13 @@ import numpy as np
 import helpers, os, sys, numpy.matlib
 import time
 from scipy.sparse import diags
-#import potentials
 
-dt = 1
+dt = 5
 dx = 0.08
 boundaryConditions = (-40, 40)
 totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)
 
-def finiteDifferenceEquation(psi, V):
+def naiveMethod(psi, V):
 
         #normalize at each step
         psi = normalize(psi)
@@ -27,7 +26,7 @@ def finiteDifferenceEquation(psi, V):
 
         return normalize(np.linalg.solve(systemMatrix, psi))
 
-def crankNicolson(psi, V):
+def crankNicolsonMethod(psi, V):
 
         H = diags([1, -2, 1], [-1, 0, 1], shape=(totalSteps, totalSteps), dtype=(complex)).toarray()
 
