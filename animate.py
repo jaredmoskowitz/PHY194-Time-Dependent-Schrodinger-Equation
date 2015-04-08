@@ -29,10 +29,7 @@ legend = plt.legend(loc='upper right', shadow=True, fontsize='x-large')
 
 
 potential = helpers.flatWell
-
 waveFunction = schrodinger.generateWavePacket(0,.5,.5)
-
-print(waveFunction[:10])
 
 def init():
 
@@ -45,9 +42,7 @@ def init():
 
 def animate(i):
     global waveFunction
-    waveFunction = schrodinger.finiteDifferenceEquation(waveFunction, potential)
-    print waveFunction[:10]
-    #time.sleep(1)
+    waveFunction = schrodinger.crankNicolson(waveFunction, potential)
     length=80
     xPositions = [dx*i + boundaryConditions[0] for i in range(len(waveFunction))]
 

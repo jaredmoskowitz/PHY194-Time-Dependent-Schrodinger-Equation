@@ -1,10 +1,10 @@
 import numpy as np
-import helpers, os, sys
+import helpers, os, sys, numpy.matlib
 import time
 from scipy.sparse import diags
 #import potentials
 
-dt = .02
+dt = 1
 dx = 0.08
 boundaryConditions = (-40, 40)
 totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)
@@ -29,22 +29,26 @@ def finiteDifferenceEquation(psi, V):
 
 def crankNicolson(psi, V):
 
-        hamiltonian =   diags([1, -2, 1], [-1, 0, 1], shape=(totalSteps, totalSteps)).toarray()
+        H = diags([1, -2, 1], [-1, 0, 1], shape=(totalSteps, totalSteps), dtype=(complex)).toarray()
 
         #account for wrapping
-        hamiltonian[0, totalSteps - 1] = 1
-        hamiltonian[totalSteps - 1, 0] = 1
+        H[0, totalSteps - 1] = 1
+        H[totalSteps - 1, 0] = 1
 
-        hamiltonian = hamiltonian/(dx ** 2)
+        H = H/(dx ** 2)
         potential =  np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
         x = boundaryConditions[0]
         for i in range(totalSteps):
-                potenial[i, i%totalSteps] = V(x)
+                potential[i, i%totalSteps] = V(x)
                 x += dx
 
-        hamiltonian += potential
-        hA =
-        return psi
+        H += potential
+        I = np.matlib.identity(totalSteps, complex)
+        hA = I - dt*1j*H/2
+        hB = I + dt*1j*H/2
+        hC = hA*np.linalg.inv(hB)
+
+        return np.linalg.solve(hC, psi)
 
 def generateWavePacket( x0, k0, sigma):
          psi = lambda x: np.exp(.25*(x-x0)*complex((x0-x)*sigma ** 2, 4*k0)*np.sqrt(np.pi)*sigma/np.sqrt(np.sqrt(2)*np.pi ** 3/2 * sigma))
@@ -53,7 +57,7 @@ def generateWavePacket( x0, k0, sigma):
 def normalize(psi):
         alpha = (1/(sum(psi)*len(psi)*dx)) * (0.5)
         return [elem*alpha for elem in psi]
-
+'''
 def main():
         ps = generateWavePacket(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
         print ps[:10]
@@ -65,5 +69,5 @@ def main():
 
 if __name__ == "__main__":
             main()
-
+'''
 

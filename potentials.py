@@ -53,13 +53,13 @@ def animate(i):
     deltaX=1
     length=80
     xPositions = [deltaX*i - 40 for i in range(length)]
-    
+
     realPlot.set_data(xPositions, [i.real for i in waveFunction])
     imPlot.set_data(xPositions, [i.imag for i in waveFunction])
     probPlot.set_data(xPositions, [abs(i) for i in waveFunction])
     potPlot.set_data(xPositions, [potential(x) if potential(x) != np.inf else 100 for x in xPositions])
     return (realPlot, imPlot, probPlot, potPlot)
-    
+
 #def plot(waveFunction, potential, deltaX):
     ##If waveFunction is 1d array
     #length = waveFunction.shape[0]
