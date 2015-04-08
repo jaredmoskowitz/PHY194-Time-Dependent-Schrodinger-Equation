@@ -63,8 +63,8 @@ return:
 def crankNicolsonMethod(psi, V):
 
 
-        H = diags([1, -2, 1], [-1, 0, 1], shape=(totalSteps, totalSteps),
-                                                dtype=(complex)).toarray()
+        H = diags([1, -2, 1], [-1, 0, 1], totalSteps)
+
 
         #account for wrapping
         H[0, totalSteps - 1] = 1
@@ -109,5 +109,20 @@ the inner pruduct is 1
 def normalize(psi):
         alpha = (1/np.sqrt(dx*sum([x**2 for x in psi])))
         return [elem*alpha for elem in psi]
+
+
+
+def diags(array, locations, width):
+    matrix = np.zeros((width, width), complex)
+    for i in range(width):
+        for j in range(len(array)):
+            if locations[j] <= 0:
+                if i-locations[j]< width and i-locations[j]>= 0:
+                    matrix[i - locations[j], i] = array[j]
+            else:
+                if i+locations[j]< width and i-locations[j]>= 0:
+                    matrix[i, locations[j] + i] = array[j]
+   return matrix
+
 
 
