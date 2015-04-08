@@ -1,12 +1,51 @@
+''''
+        potentials.py
+
+        Jared Moskowitz, Chase Crumbagh, & Nolan Hawkins
+        04/08/15
+
+        This file contains python function definitions for
+        potentials.
+
+'''
 import numpy as np
 
 potentialNames = ["Flat",
                   "Triangular",
                   "Infinite Square",
-                  "Step", 
+                  "Step",
                   "Barrier",
                   "Crystal",
                   "Harmonic"]
+
+
+'''
+generates a potential for given parameters
+parameters
+        name - name of potential (see top of file)
+        offset - x offset
+        a, b - varies for each potential
+'''
+def generatePotential(name, offset, a, b):
+    vType = potentialNames.index(name)
+
+    if (vType == 0):
+        return flatWell
+    elif (vType == 1):
+        return generateTriangularWell(offset, a)
+    elif (vType == 2):
+        return generateInfiniteSquareWell(offset, a)
+    elif (vType == 3):
+        return generateStep(offset, a)
+    elif (vType == 4):
+        return generatePotentialBarrier(offset, a, b)
+    elif (vType == 5):
+        return generateCrystal(offset, a, b)
+    elif (vType == 6):
+        return generateHarmonicWell(offset, a)
+
+    return None
+
 
 def triangularWell(x):
     return abs(x)
@@ -32,21 +71,3 @@ def generateHarmonicWell(offset, slope):
 def generateCrystal(offset, width, height):
     return lambda x: 0 if (x<offset or (x/width)%2 < 1) else height
 
-def generatePotential(name, offset, a, b):
-    vType = potentialNames.index(name)
-    #print vType
-    if (vType == 0):
-        return flatWell
-    elif (vType == 1):
-        return generateTriangularWell(offset, a)
-    elif (vType == 2):
-        return generateInfiniteSquareWell(offset, a)
-    elif (vType == 3):
-        return generateStep(offset, a)
-    elif (vType == 4):
-        return generatePotentialBarrier(offset, a, b)
-    elif (vType == 5):
-        return generateCrystal(offset, a, b)
-    elif (vType == 6):
-        return generateHarmonicWell(offset, a)
-    return None
