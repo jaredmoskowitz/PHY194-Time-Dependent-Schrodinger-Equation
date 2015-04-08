@@ -62,8 +62,7 @@ print(waveFunction[:10])
 
 def animate(j):
     global waveFunction
-    print potential(10)
-    waveFunction = schrodinger.finiteDifferenceEquation(waveFunction, potential)
+    waveFunction = schrodinger.naiveMethod(waveFunction, potential)
 
     realPlot.set_ydata([i.real for i in waveFunction])
     imPlot  .set_ydata([i.imag for i in waveFunction])
