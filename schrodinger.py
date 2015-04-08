@@ -87,29 +87,28 @@ def crankNicolsonMethod(psi, V):
         return np.linalg.solve(hC, psi)
 
 '''
+generates a wave packet
+parameters
+        x0 - starting x value
+        k0 - starting k value
+        sigma
+return
+        wave function for a wave packet (vector of complex values)
 
 '''
-generates a
 def generateWavePacket( x0, k0, sigma):
          psi = lambda x: np.exp(.25*(x-x0)*complex((x0-x)*sigma ** 2, 4*k0)*np.sqrt(np.pi)*sigma/np.sqrt(np.sqrt(2)*np.pi ** 3/2 * sigma))
          return np.array([psi(x*dx+boundaryConditions[0]) for x in range(totalSteps)])
 
+
+'''
+
+normalizes a given psi (vector of complex values) s.t.
+the inner pruduct is 1
+
+'''
 def normalize(psi):
         alpha = (1/np.sqrt(dx*sum([x**2 for x in psi])))
         return [elem*alpha for elem in psi]
 
-
-'''
-def main():
-        ps = generateWavePacket(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]))
-        rint ps[:10]
-        potential = helpers.flatWell
-        for i in range(10):
-                ps = crankNicolson(ps, potential)
-                print ps[:10]
-                time.sleep(1)
-
-if __name__ == "__main__":
-            main()
-'''
 
