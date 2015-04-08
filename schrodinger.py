@@ -10,8 +10,6 @@ totalSteps = int((boundaryConditions[1] - boundaryConditions[0])/dx)
 
 def naiveMethod(psi, V):
 
-        #normalize at each step
-        psi = normalize(psi)
 
         systemMatrix = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
         x = boundaryConditions[0]
@@ -54,7 +52,7 @@ def generateWavePacket( x0, k0, sigma):
          return np.array([psi(x*dx+boundaryConditions[0]) for x in range(totalSteps)])
 
 def normalize(psi):
-        alpha = (1/np.sqrt(dx*sum[x**2 for x in psi]))
+        alpha = (1/np.sqrt(dx*sum([x**2 for x in psi])))
         return [elem*alpha for elem in psi]
 '''
 def main():
