@@ -33,8 +33,6 @@ return:
 '''
 def naiveMethod(psi, V):
 
-        #normalize at each step
-        psi = normalize(psi)
 
         #matrix for system of eq
         systemMatrix = np.zeros((totalSteps, totalSteps), complex)
@@ -97,7 +95,7 @@ def generateWavePacket( x0, k0, sigma):
          return np.array([psi(x*dx+boundaryConditions[0]) for x in range(totalSteps)])
 
 def normalize(psi):
-        alpha = (1/(sum(psi)*len(psi)*dx)) * (0.5)
+        alpha = (1/np.sqrt(dx*sum([x**2 for x in psi])))
         return [elem*alpha for elem in psi]
 
 
