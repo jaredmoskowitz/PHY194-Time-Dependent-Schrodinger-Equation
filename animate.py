@@ -30,7 +30,7 @@ params={
 figure, axes = plt.subplots(figsize=(12,6))
 #plt.subplot(211)
 axes.set_xlim(schrodinger.boundaryConditions)
-axes.set_ylim(-0.5, 1)
+axes.set_ylim(-0.5, 3)
 plt.subplots_adjust(left=0.3, right=0.7)
 
 
@@ -106,9 +106,10 @@ def setWaveOffset(val):
     initialWaveData['x_offset'] = val
     updateWavePacket()
 
-def setWaveMomentum(val):
+def setWaveEnergy(energy):
     pause()
-    initialWaveData['momentum'] = val
+    momentum = np.sqrt(2*energy)
+    initialWaveData['momentum'] = energy
     updateWavePacket()
     
 def setWaveDeviation(val):
@@ -137,7 +138,7 @@ widthChooser.on_changed(setPotentialWidth)
 
 guiAxes = plt.axes([0.05, 0.2, 0.2, 0.05])
 guiAxes.set_title("Potential Height", loc="left")
-heightChooser = widgets.Slider(guiAxes, "", -1, 1, .5)
+heightChooser = widgets.Slider(guiAxes, "", -1, 5, .5)
 heightChooser.on_changed(setPotentialHeight)
 
 guiAxes = plt.axes([0.05, 0.1, 0.2, 0.05])
@@ -157,9 +158,9 @@ waveOffsetChooser.on_changed(setWaveOffset)
 
 
 guiAxes = plt.axes([0.75, 0.5, 0.2, 0.05])
-guiAxes.set_title("Wave Momentum", loc="left")
-waveMomentumChooser = widgets.Slider(guiAxes, "", -5, 5, 0)
-waveMomentumChooser.on_changed(setWaveMomentum)
+guiAxes.set_title("Wave Energy", loc="left")
+waveMomentumChooser = widgets.Slider(guiAxes, "", 0, 10, 0)
+waveMomentumChooser.on_changed(setWaveEnergy)
 
 guiAxes = plt.axes([0.75, 0.4, 0.2, 0.05])
 guiAxes.set_title("Wave Deviation", loc="left")
@@ -174,6 +175,8 @@ guiAxes = plt.axes([0.85, 0.3, 0.1, 0.05])
 resetButton = widgets.Button(guiAxes, "Reset")
 resetButton.on_clicked(resetButtonClicked)
 
+
+
 def animate(j, params):
     if(not params['paused']):
         params['waveFunction'] = params['method'](params['waveFunction'], params['potential'])
@@ -185,5 +188,4 @@ def animate(j, params):
 if __name__ == "__main__":
     anim = animation.FuncAnimation(figure, animate, fargs=(params,))
     
-    #animate(1)
     plt.show()
