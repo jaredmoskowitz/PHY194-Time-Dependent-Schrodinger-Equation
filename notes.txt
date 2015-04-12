@@ -11,3 +11,13 @@ Prelim - Jared                  04/02/15
 
 Comments - Together             04/08/15
 Analysis - Together             04/08/15
+
+
+================================================================================
+What Needs To Be Done:
+        -in write up, talk about eigenstates, what they look like, also
+        screenshots
+        -find energy levels and compare to known solutions
+        -compare transmitted and reflected and compare with anayltical
+        -look at incident energy set to barrier height
+
