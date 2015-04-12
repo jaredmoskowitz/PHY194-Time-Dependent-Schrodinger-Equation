@@ -39,7 +39,7 @@ def generatePotential(name, offset, width, height, slope):
     elif (vType == 1):
         return generateTriangularWell(offset, slope)
     elif (vType == 2):
-        return generateInfiniteSquareWell(offset, width)
+        return generateFiniteSquareWell(offset, width)
     elif (vType == 3):
         return generateStep(offset, height)
     elif (vType == 4):
@@ -59,8 +59,8 @@ def flatWell(x):
 def generateTriangularWell(offset, slope):
     return lambda x: abs(x - offset)*slope
 
-def generateInfiniteSquareWell(offset, width):
-    return lambda x: np.inf if (x<offset-width/2 or x > offset+width/2) else 0
+def generateFiniteSquareWell(offset, width):
+    return lambda x: 100 if (x<offset-width/2 or x > offset+width/2) else 0
 
 def generateStep(offset, height):
     return lambda x: height if (x > offset) else 0
