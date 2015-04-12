@@ -138,7 +138,7 @@ widthChooser.on_changed(setPotentialWidth)
 
 guiAxes = plt.axes([0.05, 0.2, 0.2, 0.05])
 guiAxes.set_title("Potential Height", loc="left")
-heightChooser = widgets.Slider(guiAxes, "", -1, 1, .5)
+heightChooser = widgets.Slider(guiAxes, "", -1, 5, .5)
 heightChooser.on_changed(setPotentialHeight)
 
 guiAxes = plt.axes([0.05, 0.1, 0.2, 0.05])
