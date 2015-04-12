@@ -174,6 +174,8 @@ guiAxes = plt.axes([0.85, 0.3, 0.1, 0.05])
 resetButton = widgets.Button(guiAxes, "Reset")
 resetButton.on_clicked(resetButtonClicked)
 
+
+
 def animate(j, params):
     if(not params['paused']):
         params['waveFunction'] = params['method'](params['waveFunction'], params['potential'])
@@ -185,5 +187,4 @@ def animate(j, params):
 if __name__ == "__main__":
     anim = animation.FuncAnimation(figure, animate, fargs=(params,))
     
-    #animate(1)
     plt.show()

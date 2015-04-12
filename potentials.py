@@ -6,6 +6,10 @@
 
         This file contains python function definitions for
         potentials.
+        
+        Functions begining with "generate" return a function
+        pointer to a potential function generated with the
+        arguments
 
 '''
 import numpy as np
@@ -24,7 +28,8 @@ generates a potential for given parameters
 parameters
         name - name of potential (see top of file)
         offset - x offset
-        a, b - varies for each potential
+        width, height, and slope are parameters used in 
+            some of the potential generator functions
 '''
 def generatePotential(name, offset, width, height, slope):
     vType = potentialNames.index(name)
@@ -46,12 +51,10 @@ def generatePotential(name, offset, width, height, slope):
 
     return None
 
-
-def triangularWell(x):
-    return abs(x)
-
 def flatWell(x):
     return 0
+
+# Fun Lambda Functions! 
 
 def generateTriangularWell(offset, slope):
     return lambda x: abs(x - offset)*slope
