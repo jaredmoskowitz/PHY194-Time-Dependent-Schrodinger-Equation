@@ -14,7 +14,7 @@
 '''
 import numpy as np
 
-BIG_NUMBER = 100
+BIG_NUMBER = 1000000
 
 potentialNames = ["Flat",
                   "Triangular",
