@@ -33,7 +33,7 @@ return:
         psi one step forward in time (vector of complex values)
 
 '''
-def naiveMethod(psi, V):
+def naiveMethod(psi, V, periodicPotential):
 
 
         #matrix for system of eq
@@ -51,6 +51,12 @@ def naiveMethod(psi, V):
                 colIndices += [(i - 1)%totalSteps, (i)%totalSteps, (i + 1)%totalSteps]
                 data       += [coeff, (V(x)*(dx ** 2) - 2)*coeff, coeff]
                 x += dx
+        if(not periodicPotential):
+            # The first and last elements of data are the wrapping elements. 
+            # So if it doesn't wrap, set them to 0
+            data[0]  = 0
+            data[-1] = 0
+        
         mat=csc_matrix((np.array(data), (np.array(rowIndices), np.array(colIndices))))
         return normalizeNPArray(sparse_linalg.spsolve(mat, psi))
 
@@ -108,13 +114,14 @@ def sparseCrankNicolsonMethod(psi, V):
         print newPsi[:10]
         return newPsi
     
-def crankNicolsonMethod(psi, V):
+def crankNicolsonMethod(psi, V, periodicPotential):
     
     H = diags([1, -2, 1], [-1, 0, 1], totalSteps)
     
-    #account for wrapping
-    H[0, totalSteps - 1] = 1
-    H[totalSteps - 1, 0] = 1
+    #account for wrapping if periodic
+    if(periodicPotential):
+        H[0, totalSteps - 1] = 1
+        H[totalSteps - 1, 0] = 1
     
     H = H/(dx ** 2)
     

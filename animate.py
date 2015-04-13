@@ -22,7 +22,8 @@ params={
         'potential':potential,
         'method':schrodinger.naiveMethod,
         'waveFunction':schrodinger.generateWavePacket(0,1.5,.5),
-        'paused':False
+        'paused':False,
+        'periodicPotential':True
         }
 
 
@@ -119,6 +120,13 @@ def setWaveDeviation(val):
 def resetButtonClicked(e):
     updateWavePacket()
 
+def changePotentialWrap(x):
+    if(params["periodicPotential"]):
+        periodicPotentialButton.label.set_text("Use Periodic Boundary Conditions")
+    else:
+        periodicPotentialButton.label.set_text("Use Zero Boundary Conditions")
+    params["periodicPotential"] = not params["periodicPotential"]
+
 guiAxes = plt.axes([0.05, 0.6, 0.2, 0.3])
 guiAxes.set_title("Potential:", loc="left")
 potentialChooser = widgets.RadioButtons(guiAxes, potentials.potentialNames)
@@ -166,6 +174,7 @@ guiAxes.set_title("Wave Deviation", loc="left")
 waveDeviationChooser = widgets.Slider(guiAxes, "", 0.01, .9, 0.4)
 waveDeviationChooser.on_changed(setWaveDeviation)
 
+
 guiAxes = plt.axes([0.75, 0.3, 0.1, 0.05])
 playButton = widgets.Button(guiAxes, "Pause")
 playButton.on_clicked(playButtonClicked)
@@ -175,10 +184,16 @@ resetButton = widgets.Button(guiAxes, "Reset")
 resetButton.on_clicked(resetButtonClicked)
 
 
+guiAxes = plt.axes([0.75, 0.1, 0.25, 0.05])
+periodicPotentialButton = widgets.Button(guiAxes, "Use Zero Boundary Conditions")
+periodicPotentialButton.on_clicked(changePotentialWrap)
+
 
 def animate(j, params):
     if(not params['paused']):
-        params['waveFunction'] = params['method'](params['waveFunction'], params['potential'])
+        params['waveFunction'] = params['method'](params['waveFunction'], 
+                                                  params['potential'], 
+                                                  params['periodicPotential'])
     realPlot.set_ydata([i.real for i in params['waveFunction']])
     imPlot  .set_ydata([i.imag for i in params['waveFunction']])
     probPlot.set_ydata([abs(i) for i in params['waveFunction']])
