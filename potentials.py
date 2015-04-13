@@ -14,13 +14,17 @@
 '''
 import numpy as np
 
+BIG_NUMBER = 100
+
 potentialNames = ["Flat",
                   "Triangular",
                   "Infinite Square",
                   "Step",
                   "Barrier",
                   "Crystal",
-                  "Harmonic"]
+                  "Harmonic",
+                  "Question 6A",
+                  "Question 6B"]
 
 
 '''
@@ -48,6 +52,10 @@ def generatePotential(name, offset, width, height, slope):
         return generateCrystal(offset, width, height)
     elif (vType == 6):
         return generateHarmonicWell(offset, slope)
+    elif (vType == 7):
+        return generateQuestion6A(offset, width)
+    elif (vType == 8):
+        return generateQuestion6B(offset, width)
 
     return None
 
@@ -60,7 +68,7 @@ def generateTriangularWell(offset, slope):
     return lambda x: abs(x - offset)*slope
 
 def generateFiniteSquareWell(offset, width):
-    return lambda x: 100 if (x<offset-width/2 or x > offset+width/2) else 0
+    return lambda x: BIG_NUMBER if (x<offset-width/2 or x > offset+width/2) else 0
 
 def generateStep(offset, height):
     return lambda x: height if (x > offset) else 0
@@ -73,4 +81,10 @@ def generateHarmonicWell(offset, slope):
 
 def generateCrystal(offset, width, height):
     return lambda x: 0 if (x<offset or (x/width)%2 < 1) else height
+
+def generateQuestion6A(offset, width):
+    return lambda x: BIG_NUMBER if (x<offset-width/2 or x > offset+width/2) else 1j*x
+
+def generateQuestion6B(offset, width):
+    return lambda x: BIG_NUMBER if (x<offset-width/2 or x > offset+width/2) else x+1j*x
 

@@ -41,7 +41,7 @@ realPlot, = axes.plot(xData, xData, 'r',  label="Real")
 imPlot,   = axes.plot(xData, xData, 'b',  label="Imaginary")
 probPlot, = axes.plot(xData, xData, 'k-', label="Probablility", linewidth=2)
 #  And the plot of the potential
-potPlot,  = axes.plot(xData, [potential(x) if potential(x) != np.inf else 100 for x in xData], 'k:', label="Potential")
+potPlot,  = axes.plot(xData, [abs(potential(x)) for x in xData], 'k:', label="Potential")
 legend = axes.legend(loc='upper right', shadow=True)
 
 def updatePotential():
@@ -50,11 +50,10 @@ def updatePotential():
                                              potentialData['width'], 
                                              potentialData['height'],
                                              potentialData['slope'])
-    potPlot.set_ydata([potential(x) if potential(x) != np.inf else 100 for x in xData])
+    potPlot.set_ydata([abs(potential(x)) for x in xData])
     params['potential']=potential
     
 def setPotentialName(potentialName):
-    print "Changing??"
     potentialData['name'] = potentialName
     updatePotential()
     
