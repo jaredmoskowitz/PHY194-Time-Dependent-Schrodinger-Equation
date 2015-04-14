@@ -82,9 +82,9 @@ legend = axes.legend(loc='upper right', shadow=True)
 
 # Called by any function that changes the parameters of the underlying potential
 def updatePotential():
-    potential = potentials.generatePotential(potentialData['name'], 
+    potential = potentials.generatePotential(potentialData['name'],
                                              potentialData['x_offset'],
-                                             potentialData['width'], 
+                                             potentialData['width'],
                                              potentialData['height'],
                                              potentialData['slope'])
     potPlot.set_ydata([abs(potential(x)) for x in xData])
@@ -95,24 +95,24 @@ def updatePotential():
 def setPotentialName(potentialName):
     potentialData['name'] = potentialName
     updatePotential()
-    
+
 def setPotentialOffset(val):
     potentialData['x_offset']=val
     updatePotential()
-    
+
 def setPotentialWidth(val):
     potentialData['width']=val
     updatePotential()
-    
+
 def setPotentialHeight(val):
     potentialData['height']=val
     updatePotential()
-    
+
 def setPotentialSlope(val):
     potentialData['slope']=val**2
     updatePotential()
 
-# This changes the method of solving the TISE  
+# This changes the method of solving the TISE
 def setMethod(methodName):
     if(methodName == "$Crank\ Nicolson$"):
         params['method'] = schrodinger.crankNicolsonMethod
@@ -153,7 +153,7 @@ def setWaveEnergy(energy):
     momentum = np.sqrt(2*energy)
     initialWaveData['momentum'] = energy
     updateWavePacket()
-    
+
 def setWaveDeviation(deviation):
     initialWaveData['deviation'] = deviation
     updateWavePacket()
@@ -242,17 +242,31 @@ periodicPotentialButton.on_clicked(changePotentialWrap)
 
 def animate(j, params):
     if(not params['paused']):
-        params['waveFunction'] = params['method'](params['waveFunction'], 
-                                                  params['potential'], 
+        params['waveFunction'] = params['method'](params['waveFunction'],
+                                                  params['potential'],
                                                   params['periodicPotential'])
-   
+
     # the xdata has already been set, so just update the y-data
     realPlot.set_ydata([i.real for i in params['waveFunction']])
     imPlot  .set_ydata([i.imag for i in params['waveFunction']])
     probPlot.set_ydata([abs(i) for i in params['waveFunction']])
+    f = open('RvsT','w')
+    totalSum = .01
+    reflected = .001
+    potential_offset = potentialData['x_offset']
+    wave_offset = initialWaveData['x_offset']
+    waveFunction = params['waveFunction']
+    for i in range(int(wave_offset)):
+                    totalSum += waveFunction[i - wave_offset]
+                    print "i : %d\n offset: %d\n"%(i, offset)
+                    if i <= offset:
+                            reflected += waveFunction[i - wave_offset]
+    writeString ='total: ' + str(abs(totalSum)) + '\n' + 'reflection: ' + str(abs(reflected)) + '\n' + 'ratio: ' + str(abs(reflected)/abs(totalSum - reflected)) + '\n'
+    f.write(writeString) # python will convert \n to os.linesep
+    f.close() # you can omit in most cases as the destructor will call if
 
 # If this is the main program, run!
 if __name__ == "__main__":
     anim = animation.FuncAnimation(figure, animate, fargs=(params,))
-    
+
     plt.show()

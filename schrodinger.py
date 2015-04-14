@@ -52,14 +52,32 @@ def naiveMethod(psi, V, periodicPotential):
                 data       += [coeff, (V(x)*(dx ** 2) - 2)*coeff, coeff]
                 x += dx
         if(not periodicPotential):
-            # The first and last elements of data are the wrapping elements. 
+            # The first and last elements of data are the wrapping elements.
             # So if it doesn't wrap, set them to 0
             data[0]  = 0
             data[-1] = 0
-        
+
         mat=csc_matrix((np.array(data), (np.array(rowIndices), np.array(colIndices))))
         return normalizeNPArray(sparse_linalg.spsolve(mat, psi))
 
+
+def initializeHamiltonian(V, size):
+    rowIndices = []
+    colIndices = []
+    data       = []
+    coeffMatrix = [1/(dx**2), -2/dx**2, 1/dx**2]
+
+    x = boundaryConditions[0]
+
+    for i in range(size):
+        colIndices += [(i-1)%size,  i, (i+1)%size]
+        rowIndices += [i,  i, i]
+
+        data       += [1j*dt*.5*coeffMatrix[0],
+                       1j*dt*.5*(coeffMatrix[1] + V(x)),
+                       1j*dt*.5*coeffMatrix[2]]
+        x+=dx
+    return (np.array(data), np.array(rowIndices),np.array(colIndices))
 
 '''
 Uses the Crank-Nicolson method to solve the TDSE for a given potential V and
@@ -73,25 +91,36 @@ return:
         psi one step forward in time (vector of complex values)
 '''
 
-def initializeHamiltonian(V, size):
-    rowIndices = []
-    colIndices = []
-    data       = []
-    coeffMatrix = [1/(dx**2), -2/dx**2, 1/dx**2]
-    
+
+def crankNicolsonMethod(psi, V, periodicPotential):
+
+    H = diags([1, -2, 1], [-1, 0, 1], totalSteps)
+
+    #account for wrapping if periodic
+    if(periodicPotential):
+        H[0, totalSteps - 1] = 1
+        H[totalSteps - 1, 0] = 1
+
+    H = H/(dx ** 2)
+
+    potential = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
     x = boundaryConditions[0]
-    
-    for i in range(size):
-        colIndices += [(i-1)%size,  i, (i+1)%size]
-        rowIndices += [i,  i, i]
-        
-        data       += [1j*dt*.5*coeffMatrix[0],
-                       1j*dt*.5*(coeffMatrix[1] + V(x)),
-                       1j*dt*.5*coeffMatrix[2]]
-        x+=dx
-    return (np.array(data), np.array(rowIndices),np.array(colIndices))
-    
-            
+    for i in range(totalSteps):
+        potential[i, i] = V(x)
+        x += dx
+
+    H += potential
+    I = np.matlib.identity(totalSteps, complex)
+    hA = I - dt*1j*H/2
+    hB = I + dt*1j*H/2
+    hC = hA*np.linalg.inv(hB)
+
+    return np.linalg.solve(hC, psi)
+
+'''
+Alternative implementation of the Crank-Nicholson method as an
+attempt to increase the time performance
+'''
 def sparseCrankNicolsonMethod(psi, V):
 
 
@@ -100,44 +129,20 @@ def sparseCrankNicolsonMethod(psi, V):
             if((i-1)%3 == 0):
                 data[i] = 1+data[i]
         hB = csc_matrix((data, (rowIndices, colIndices)), dtype=complex)
-        
+
         for i in range(len(data)):
             if((i-1)%3 == 0):
                 data[i] = 2-data[i]
             else:
                 data[i] = -data[i]
         hA = csc_matrix((data, (rowIndices, colIndices)), dtype=complex)
-        
-        
+
+
         hC = hA*sparse_linalg.inv(hB)
         newPsi = sparse_linalg.spsolve(hC, psi)
         print newPsi[:10]
         return newPsi
-    
-def crankNicolsonMethod(psi, V, periodicPotential):
-    
-    H = diags([1, -2, 1], [-1, 0, 1], totalSteps)
-    
-    #account for wrapping if periodic
-    if(periodicPotential):
-        H[0, totalSteps - 1] = 1
-        H[totalSteps - 1, 0] = 1
-    
-    H = H/(dx ** 2)
-    
-    potential = np.zeros((totalSteps, totalSteps), complex) #matrix for system of eq
-    x = boundaryConditions[0]
-    for i in range(totalSteps):
-        potential[i, i] = V(x)
-        x += dx
-    
-    H += potential
-    I = np.matlib.identity(totalSteps, complex)
-    hA = I - dt*1j*H/2
-    hB = I + dt*1j*H/2
-    hC = hA*np.linalg.inv(hB)
-    
-    return np.linalg.solve(hC, psi)
+
 
 '''
 generates a wave packet
@@ -163,7 +168,7 @@ the inner pruduct is 1
 def normalizeList(psi):
         alpha = (1/np.sqrt(dx*sum([x**2 for x in psi])))
         return [elem*alpha for elem in psi]
-    
+
 def normalizeNPArray(psi):
         s = 0
         for x in psi:
