@@ -60,7 +60,6 @@ def naiveMethod(psi, V, periodicPotential):
         mat=csc_matrix((np.array(data), (np.array(rowIndices), np.array(colIndices))))
         return normalizeNPArray(sparse_linalg.spsolve(mat, psi))
 
-
 '''
 Uses the Crank-Nicolson method to solve the TDSE for a given potential V and
 wave function psi for a certain timestep

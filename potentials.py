@@ -14,8 +14,10 @@
 '''
 import numpy as np
 
+# This is approximately infinity
 BIG_NUMBER = 1000000
 
+# A variety of potential names
 potentialNames = ["Flat",
                   "Triangular",
                   "Infinite Square",
@@ -62,7 +64,10 @@ def generatePotential(name, offset, width, height, slope):
 def flatWell(x):
     return 0
 
-# Fun Lambda Functions! 
+# Fun Lambda Functions!
+# They all return a potential as a function of x, given certain self explanatory parameters
+# Note that BIG_NUMBER is substituted for infinity, which could be implemented as np.inf,
+# but that np.inf messes with our matrix math
 
 def generateTriangularWell(offset, slope):
     return lambda x: abs(x - offset)*slope
@@ -80,7 +85,7 @@ def generateHarmonicWell(offset, slope):
     return lambda x: slope/50*(x-offset)**2
 
 def generateCrystal(offset, width, height):
-    return lambda x: 0 if (x<offset or (x/width)%2 < 1) else height
+    return lambda x: 0 if (x<offset or ((x-offset)/width)%2 < 1) else height
 
 def generateQuestion6A(offset, width):
     return lambda x: BIG_NUMBER if (x<offset-width/2 or x > offset+width/2) else 1j*x
