@@ -39,7 +39,7 @@ potentialData = {'name':'Triangular','x_offset':0, 'width':10, 'height':.5, 'slo
 
 # These data are changed by the Wave GUI, on the right side of the screen,
 # and when any of it is changed, the animation pauses and a new wave packet is generated
-initialWaveData = {'x_offset':0, 'momentum':1.5, 'deviation':.5}
+initialWaveData = {'x_offset':0, 'momentum':0, 'deviation':.5}
 
 # These determine how the animation is working and all that jazz
 params = {
@@ -61,7 +61,7 @@ axes.set_xlim(boundaryConditions)
 axes.set_ylim(-0.5, 3)
 
 # Make room for the GUI elements
-plt.subplots_adjust(left=0.3, right=0.7)
+plt.subplots_adjust(left=0.32, right=0.72)
 
 # xData is merely the coordinates on the x axis that matter
 xData=[dx*i + boundaryConditions[0] for i in range(len(params['waveFunction']))]
